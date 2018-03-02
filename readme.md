@@ -1,26 +1,25 @@
-# °²×°ÂÌÉ«°æ±¾mysqlÅú´¦Àí
+# å®‰è£…ç»¿è‰²ç‰ˆæœ¬mysqlæ‰¹å¤„ç†
 
-mysql5.7.21ÏÂ²âÊÔÍ¨¹ı
+mysql5.7.21ä¸‹æµ‹è¯•é€šè¿‡
 
-ÏÂÔØÁ´½Ó£ºhttps://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.21-winx64.zip
+ä¸‹è½½é“¾æ¥ï¼šhttps://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.21-winx64.zip
 
-½«setup.bat·Åµ½ÏàÓ¦Â·¾¶ÏÂ£º
+å°†setup.batæ”¾åˆ°ç›¸åº”è·¯å¾„ä¸‹ï¼š
 
-¡¤¡¤¡¤
+```
 G:\GREENSOFT\MYSQL-5.7.21-WINX64
-©À©¤©¤bin
-©À©¤©¤docs
-©À©¤©¤include
-©À©¤©¤lib
-©À©¤©¤share
-©À©¤setup.bat
-©¸©¤clear.bat
+â”œâ”€â”€bin
+â”œâ”€â”€docs
+â”œâ”€â”€include
+â”œâ”€â”€lib
+â”œâ”€â”€share
+â”œâ”€setup.bat
+â””â”€clear.bat
+```
 
-¡¤¡¤¡¤
+è¿è¡Œsetup.bat
 
-ÔËĞĞsetup.bat
-
-1. ³õÊ¼»¯data
-2. Éú³Émy.ini¡¢my.cnf
-3. Æô¶¯·şÎñ
-4. ÖØÖÃrootÃÜÂëÎªroot123
+1. åˆå§‹åŒ–data
+2. ç”Ÿæˆmy.iniã€my.cnf
+3. å¯åŠ¨æœåŠ¡
+4. é‡ç½®rootå¯†ç ä¸ºroot123

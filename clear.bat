@@ -24,13 +24,13 @@ if not exist "%mysql_bin%\mysql.exe" (
 )
 
 rem Çå³ýÊý¾Ý
+if exist "%currentPath%\UnInstall.bat" (
+	call "%currentPath%\UnInstall.bat"
+	del /q "%currentPath%\UnInstall.bat"
+)
 
 if exist "%currentPath%\Install.bat" (
 	del /q "%currentPath%\Install.bat"
-)
-
-if exist "%currentPath%\UnInstall.bat" (
-	del /q "%currentPath%\UnInstall.bat"
 )
 
 if exist "%currentPath%\start.bat" (

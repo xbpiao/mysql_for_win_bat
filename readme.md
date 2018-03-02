@@ -4,7 +4,7 @@ mysql5.7.21下测试通过
 
 下载链接：https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.21-winx64.zip
 
-将setup.bat放到相应路径下：
+将setup.bat放到相应路径下，例如：
 
 ```
 G:\GREENSOFT\MYSQL-5.7.21-WINX64

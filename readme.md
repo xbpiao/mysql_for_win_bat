@@ -1,4 +1,4 @@
-# 安装绿色版本mysql批处理
+# 绿色安装windows版本mysql的批处理
 
 mysql5.7.21下测试通过
 

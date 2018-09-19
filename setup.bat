@@ -18,7 +18,8 @@ rem ****************************************************************************
 
 rem 指定mysql的基础安装路径
 set mysql_basedir=%currentPath%
-
+rem 设置默认密码为root123
+set mysql_default_pwd=root123
 rem *****************************************************************************************************
 rem * 把参数mysql_basedir末尾的斜杠去掉 begin
 rem *****************************************************************************************************
@@ -87,6 +88,14 @@ if not exist "%mysql_bin%\mysql.exe" (
 
 rem 显示当前mysql版本号
 "%mysql_bin%\mysql.exe" --version
+set mysql_ver=5.7.21
+cd %mysql_bin%
+for /f "tokens=3,4*" %%i in ('mysql.exe --version ^| findstr /i "Ver "') do (
+	set mysql_ver=%%i
+	echo %%i
+)
+cd %mysql_basedir%
+echo mysql_ver=%mysql_ver%
 
 if exist "%mysql_data%" (
 	echo 请确认参数mysql_data=%mysql_data%，必须是一个不存在的空目录，当前检测到目录已经存在！
@@ -178,6 +187,10 @@ echo basedir=%ini_mysql_basedir% >> "%mysql_ini_file%"
 echo # set datadir to the location of your data directory >> "%mysql_ini_file%"
 echo datadir=%ini_mysql_data% >> "%mysql_ini_file%"
 echo character-set-server=utf8 >> "%mysql_ini_file%"
+if "%mysql_ver:~0,1%" == "8" (
+	echo # mysql8 >> "%mysql_ini_file%"
+	echo default_authentication_plugin=mysql_native_password >> "%mysql_ini_file%"
+)
 
 rem 生成注册安装windows服务批处理Install.bat
 echo "%mysql_bin%\mysqld.exe" --install mysql > "%mysql_install_bat%"
@@ -193,12 +206,12 @@ rem 生成停止服务批处理
 echo net stop mysql > "%mysql_stop_bat%"
 
 rem 生成重置密码批处理
-echo "%mysql_bin%\mysqladmin.exe" -u root -h 127.0.0.1 password "root123" > "%mysql_reset_root_password_bat%"
+echo "%mysql_bin%\mysqladmin.exe" -u root -h 127.0.0.1 password "%mysql_default_pwd%" > "%mysql_reset_root_password_bat%"
 
 
 echo 命令行启动："%mysql_bin%\mysqld.exe" --defaults-file="%mysql_ini_file%" --console
-echo 修改root密码："%mysql_bin%\mysqladmin.exe" -u root -h 127.0.0.1 password "root123"
-echo 命令行连接："%mysql_bin%\mysql.exe" -uroot -proot123 -h 127.0.0.1
+echo 修改root密码："%mysql_bin%\mysqladmin.exe" -u root -h 127.0.0.1 password "%mysql_default_pwd%"
+echo 命令行连接："%mysql_bin%\mysql.exe" -uroot -p%mysql_default_pwd% -h 127.0.0.1
 echo 安装服务：install.bat
 echo 卸载服务：uninstall.bat
 echo 启动服务：start.bat
@@ -209,10 +222,13 @@ call "%mysql_install_bat%"
 call "%mysql_start_bat%"
 call "%mysql_reset_root_password_bat%"
 
-ping 127.0.0.1 -n 3 > nil
+ping 127.0.0.1 -n 3 > nul
 
 :success_exit
 
 @echo off
+if "%mysql_ver:~0,1%" == "8" (
+	echo use mysql;alter user 'root'@'localhost' IDENTIFIED WITH mysql_native_password by '%mysql_default_pwd%'; | "%mysql_bin%\mysql.exe" -uroot -p%mysql_default_pwd% -h 127.0.0.1
+)
 
-echo show variables like "%char%"; | "%mysql_bin%\mysql.exe" -uroot -proot123 -h 127.0.0.1
+echo show variables like "%char%"; | "%mysql_bin%\mysql.exe" -uroot -p%mysql_default_pwd% -h 127.0.0.1

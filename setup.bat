@@ -20,6 +20,8 @@ rem 指定mysql的基础安装路径
 set mysql_basedir=%currentPath%
 rem 设置默认密码为root123
 set mysql_default_pwd=root123
+set mysql_default_port=3306
+set mysql_service_name=mysql
 rem *****************************************************************************************************
 rem * 把参数mysql_basedir末尾的斜杠去掉 begin
 rem *****************************************************************************************************
@@ -114,7 +116,7 @@ if %errorlevel% neq 0 (
 rem SET PASSWORD FOR 'some_user'@'some_host' = PASSWORD('password');
 rem SET PASSWORD FOR 'root'@'%' = PASSWORD('root123');
 rem 启动时增加--skip-grant-tables参数就会跳过密码验证，可以操作数据，但不能重置密码
-rem 修改密码用：mysqladmin -u root -h 127.0.0.1 password "root123"
+rem 修改密码用：mysqladmin -u root -h 127.0.0.1 -P 3306 password "root123"
 echo "%mysql_bin%\mysqld.exe" --defaults-file="%mysql_ini_file%" --console
 
 :success_set
@@ -174,44 +176,46 @@ echo ini_mysql_data=%replaceValue%
 
 rem 生成配置文件my.cnf
 echo [client] > "%mysql_cnf_file%"
-echo port=3306 >> "%mysql_cnf_file%"
+echo port=%mysql_default_port% >> "%mysql_cnf_file%"
 echo character-sets-dir=%ini_mysql_basedir%\\share\\charsets >> "%mysql_cnf_file%"
 echo default-character-set=utf8 >> "%mysql_cnf_file%"
 
 rem 生成配置文件my.ini
 echo [client] > "%mysql_ini_file%"
 echo default-character-set=utf8 >> "%mysql_ini_file%"
+echo port=%mysql_default_port% >> "%mysql_ini_file%"
 echo [mysqld] >> "%mysql_ini_file%"
 echo # set basedir to your installation path >> "%mysql_ini_file%"
 echo basedir=%ini_mysql_basedir% >> "%mysql_ini_file%"
 echo # set datadir to the location of your data directory >> "%mysql_ini_file%"
 echo datadir=%ini_mysql_data% >> "%mysql_ini_file%"
 echo character-set-server=utf8 >> "%mysql_ini_file%"
+echo port=%mysql_default_port% >> "%mysql_ini_file%"
 if "%mysql_ver:~0,1%" == "8" (
 	echo # mysql8 >> "%mysql_ini_file%"
 	echo default_authentication_plugin=mysql_native_password >> "%mysql_ini_file%"
 )
 
 rem 生成注册安装windows服务批处理Install.bat
-echo "%mysql_bin%\mysqld.exe" --install mysql > "%mysql_install_bat%"
+echo "%mysql_bin%\mysqld.exe" --install %mysql_service_name% --defaults-file="%mysql_ini_file%" > "%mysql_install_bat%"
 
 rem 生成卸载服务批处理
-echo net stop mysql > "%mysql_uninstall_bat%"
+echo net stop %mysql_service_name% > "%mysql_uninstall_bat%"
 echo "%mysql_bin%\mysqld.exe" --remove >> "%mysql_uninstall_bat%"
 
 rem 生成启动服务批处理
-echo net start mysql > "%mysql_start_bat%"
+echo net start %mysql_service_name% > "%mysql_start_bat%"
 
 rem 生成停止服务批处理
-echo net stop mysql > "%mysql_stop_bat%"
+echo net stop %mysql_service_name% > "%mysql_stop_bat%"
 
 rem 生成重置密码批处理
-echo "%mysql_bin%\mysqladmin.exe" -u root -h 127.0.0.1 password "%mysql_default_pwd%" > "%mysql_reset_root_password_bat%"
+echo "%mysql_bin%\mysqladmin.exe" -u root -h 127.0.0.1 -P %mysql_default_port% password "%mysql_default_pwd%" > "%mysql_reset_root_password_bat%"
 
 
 echo 命令行启动："%mysql_bin%\mysqld.exe" --defaults-file="%mysql_ini_file%" --console
-echo 修改root密码："%mysql_bin%\mysqladmin.exe" -u root -h 127.0.0.1 password "%mysql_default_pwd%"
-echo 命令行连接："%mysql_bin%\mysql.exe" -uroot -p%mysql_default_pwd% -h 127.0.0.1
+echo 修改root密码："%mysql_bin%\mysqladmin.exe" -u root -h 127.0.0.1 -P %mysql_default_port% password "%mysql_default_pwd%"
+echo 命令行连接："%mysql_bin%\mysql.exe" -uroot -p%mysql_default_pwd% -h 127.0.0.1 -P %mysql_default_port%
 echo 安装服务：install.bat
 echo 卸载服务：uninstall.bat
 echo 启动服务：start.bat
@@ -228,7 +232,7 @@ ping 127.0.0.1 -n 3 > nul
 
 @echo off
 if "%mysql_ver:~0,1%" == "8" (
-	echo use mysql;alter user 'root'@'localhost' IDENTIFIED WITH mysql_native_password by '%mysql_default_pwd%'; | "%mysql_bin%\mysql.exe" -uroot -p%mysql_default_pwd% -h 127.0.0.1
+	echo use mysql;alter user 'root'@'localhost' IDENTIFIED WITH mysql_native_password by '%mysql_default_pwd%'; | "%mysql_bin%\mysql.exe" -uroot -p%mysql_default_pwd% -h 127.0.0.1 -P %mysql_default_port%
 )
 
-echo show variables like "%char%"; | "%mysql_bin%\mysql.exe" -uroot -p%mysql_default_pwd% -h 127.0.0.1
+echo show variables like "%char%"; | "%mysql_bin%\mysql.exe" -uroot -p%mysql_default_pwd% -h 127.0.0.1 -P %mysql_default_port%

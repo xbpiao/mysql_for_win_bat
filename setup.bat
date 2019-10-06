@@ -201,7 +201,7 @@ echo "%mysql_bin%\mysqld.exe" --install %mysql_service_name% --defaults-file="%m
 
 rem 生成卸载服务批处理
 echo net stop %mysql_service_name% > "%mysql_uninstall_bat%"
-echo "%mysql_bin%\mysqld.exe" --remove >> "%mysql_uninstall_bat%"
+echo "%mysql_bin%\mysqld.exe" --remove %mysql_service_name% >> "%mysql_uninstall_bat%"
 
 rem 生成启动服务批处理
 echo net start %mysql_service_name% > "%mysql_start_bat%"
